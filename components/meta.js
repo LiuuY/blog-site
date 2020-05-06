@@ -3,6 +3,7 @@ import Head from 'next/head'
 export default function Meta() {
   return (
     <Head>
+      <title>LiuuY blog.</title>
       <link
         rel="apple-touch-icon"
         sizes="180x180"
@@ -33,6 +34,7 @@ export default function Meta() {
       <link rel="alternate" type="application/rss+xml" href="/feed.xml" />
       <meta
         name="description"
+        content="LiuuY's blog mainly focus on frontend. LiuuY 的博客。"
       />
     </Head>
   )
