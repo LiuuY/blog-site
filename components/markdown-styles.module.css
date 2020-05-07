@@ -20,3 +20,7 @@
 .markdown a {
   @apply underline;
 }
+
+.markdown ol {
+  @apply list-decimal pl-6;
+}
