@@ -1,5 +1,5 @@
 .markdown {
-  @apply text-lg leading-relaxed;
+  @apply text-base leading-relaxed;
 }
 
 .markdown p,
@@ -10,11 +10,11 @@
 }
 
 .markdown h2 {
-  @apply text-3xl mt-12 mb-4 leading-snug;
+  @apply text-2xl mt-12 mb-4 leading-snug;
 }
 
 .markdown h3 {
-  @apply text-2xl mt-8 mb-4 leading-snug;
+  @apply text-xl mt-8 mb-4 leading-snug;
 }
 
 .markdown a {
@@ -23,4 +23,17 @@
 
 .markdown ol {
   @apply list-decimal pl-6;
+}
+
+.markdown ul {
+  @apply list-disc pl-6;
+}
+
+.markdown blockquote {
+  @apply px-4 border-solid border-gray-500 border-l-4;
+  color: #6a737d;
+}
+
+.markdown pre {
+  @apply bg-gray-200 p-2 whitespace-pre-wrap text-sm;
 }
