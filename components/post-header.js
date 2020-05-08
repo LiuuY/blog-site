@@ -8,7 +8,7 @@ export default function PostHeader({ title, date, author }) {
       <PostTitle>{title}</PostTitle>
       <div className="hidden md:block md:mb-12">
         <Avatar name={author.name} picture={author.picture} />
-        <div className="text-gray-500">
+        <div className="text-xs text-gray-500">
           <DateFormater dateString={date} />
         </div>
       </div>
