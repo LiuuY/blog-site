@@ -36,6 +36,16 @@ export default function Meta() {
         name="description"
         content="LiuuY's blog mainly focus on frontend. LiuuY 的博客。"
       />
+      <script async src="https://www.googletagmanager.com/gtag/js?id=UA-165828599-1"></script>
+      <script dangerouslySetInnerHTML={
+        { __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+  
+          gtag('config', 'UA-165828599-1');
+        `}
+      }></script>
     </Head>
   )
 }
