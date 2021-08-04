@@ -1,6 +1,6 @@
 ---
-title: '前端架构之 JAMStack'
-date: '2020-05-02'
+title: "前端架构之 JAMStack"
+date: "2020-05-02"
 author:
   name: LiuuY
 ---
@@ -54,7 +54,7 @@ _一种有趣的比喻是：「[CDN 优先应用程序](https://www.thoughtworks
 2. [Scully](https://github.com/scullyio/scully) 是基于 Angular 的 SSG 框架。
 3. [VitePress](https://github.com/vuejs/vitepress) 是 Vue 官方推出的 SSG 框架。
 
-部署方面有 [Vervel](https://vercel.com/)、[Netlify](https://www.netlify.com/)、[腾讯云云开发](https://cloud.tencent.com/product/tcb?from=12334)等等。
+部署方面有 [Vercel](https://vercel.com/)、[Netlify](https://www.netlify.com/)、[腾讯云云开发](https://cloud.tencent.com/product/tcb?from=12334)等等。
 
 ## [Ledge](https://devops.phodal.com/) 项目的实践
 
