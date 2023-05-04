@@ -5,6 +5,6 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Optima-Regular";
-  src: url("/assets/fonts/Optima-Regular.tff") format("tff");
+  font-family: 'Optima-Regular';
+  src: url('/assets/fonts/Optima-Regular.tff') format('tff');
 }
