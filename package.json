@@ -1,6 +1,7 @@
 {
   "name": "liuuy-blog",
   "version": "1.0.0",
+  "license": "MIT",
   "engines": {
     "node": "18.x"
   },
@@ -12,9 +13,7 @@
   "dependencies": {
     "classnames": "2.2.6",
     "date-fns": "2.10.0",
-    "eslint-config-next": "^13.2.4",
     "gray-matter": "4.0.2",
-    "isomorphic-unfetch": "3.0.0",
     "next": "^13.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -22,10 +21,11 @@
     "remark-html": "10.0.0"
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^2.1.0",
-    "dotenv": "8.2.0",
-    "postcss-preset-env": "^6.7.0",
+    "autoprefixer": "^10.4.14",
+    "cssnano": "^6.0.1",
+    "eslint-config-next": "^13.2.4",
+    "postcss": "^8.4.23",
     "prettier": "^2.8.8",
-    "tailwindcss": "^1.2.0"
+    "tailwindcss": "^3.3.2"
   }
 }
