@@ -7,12 +7,6 @@ import './global.css'
 export default function RootLayout({ children }) {
   return (
     <html lang="zh">
-      <head>
-        <meta
-          httpEquiv="Content-Security-Policy"
-          content="default-src * 'unsafe-inline' 'unsafe-eval'"
-        />
-      </head>
       <body>
         <div className="min-h-screen">
           <main>
