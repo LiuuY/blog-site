@@ -10,11 +10,19 @@
 }
 
 .markdown h2 {
-  @apply text-2xl mt-12 mb-4 leading-snug border-solid border-gray-200 border-b;
+  @apply text-3xl mt-12 mb-4 leading-snug border-solid border-gray-200 border-b;
 }
 
 .markdown h3 {
+  @apply text-2xl mt-8 mb-4 leading-snug;
+}
+
+.markdown h4 {
   @apply text-xl mt-8 mb-4 leading-snug;
+}
+
+.markdown h5 {
+  @apply text-lg mt-8 mb-4 leading-snug;
 }
 
 .markdown a {
@@ -36,4 +44,9 @@
 
 .markdown pre {
   @apply bg-gray-200 p-2 whitespace-pre-wrap text-sm;
+}
+
+.markdown table :is(td, th) {
+  border: 1px solid black;
+  padding: 0.3em;
 }
