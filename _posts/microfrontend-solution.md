@@ -33,7 +33,11 @@ author:
 
 ### 微前端特性
 
-<img width="781" src="/assets/images/microfrontend-solution/adv.png">
+1. 技术栈无关
+2. 独立发布
+3. 样式隔离
+4. 运行沙盒
+5. 懒/预加载
 
 ### 微前端优势
 
