@@ -5,8 +5,6 @@ author:
   name: LiuuY
 ---
 
-## WebView 离线包方案
-
 ### 为什么要做离线包
 
 某 APP 是对内办公 APP，服务数万员工，主要为原生技术栈加大量 Web 应用（2000+），这些 Web 应用技术栈各异，包括 React 等现代框架也有 Zepto 甚至 ASP、FreeMarker等。
