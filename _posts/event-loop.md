@@ -148,11 +148,11 @@ foo()
 
 任何代码都是放到 Call Stack 中执行的（无论来自代码还是 Task Queue/Microtask Qeueu）。
 
-### Event Loop 执行步骤：
+### Event Loop 执行步骤
 
 有了上述的理论基础，我们可以将它们串联起来，JavaScript 代码执行的过程就是：载入代码，将其放入 Call Stack 开始执行，遇到 Task 就放到 Task Queue 中，遇到 Microtask 就放到 Microtask Queue。
 
-当 Call Stack 为空的时候，Event Loop 就开始执行，注意，执行代码本身也是一个 Task，所以当前代码执行后，需要执行 Microtask Qeueu。
+当 Call Stack 为空的时候，Event Loop 就开始执行，注意，执行代码本身也是一个 Task，所以当前代码执行后，需要执行 Microtask Queue。
 
 我们举个例子：
 
