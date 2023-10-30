@@ -112,4 +112,4 @@ export function OutletServerComponents() {
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
 
-我们在点击按钮的时候，在 Client Components (<Toggle />) 修改 `searchParams` 中 `auth=true` / `auth=false`，从而在 Server Components（<Details /> 中渲染不同的内容。
+我们在点击按钮的时候，在 Client Components (`<Toggle />`) 修改 `searchParams` 中 `auth=true` 或 `auth=false`，从而在 Server Components（`<Details />`） 中渲染不同的内容。
