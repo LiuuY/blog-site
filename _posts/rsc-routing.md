@@ -47,7 +47,7 @@ function Note({ note }) {
 
 ### RSC 渲染逻辑
 
-首先我们需要有个核心前提： React 规定 Client Components 不能 import Server Components！
+首先我们需要有个核心前提：Client Components 不能依赖（import）Server Components，或者说，Server Components 的渲染不依赖 Client Components 的行为。
 
 ```javascript
 'use client'
@@ -86,11 +86,13 @@ export function OutletServerComponents() {
 
 <img width="781" src="/assets/images/rsc-routing/tree2.png">
 
+为什么 React 会做出这样的设计决策？避免 Server Components 和 Client Components 的依赖，在页面加载时，就可以避免由于依赖而导致的请求 [Waterfall](https://tanstack.com/query/v5/docs/react/guides/request-waterfalls#what-is-a-request-waterfall)。例如上述案例中，如果 `<Details />` 依赖 `<Toggle />` 而渲染，那么就会导致组件请求需要有先后，从而影响了性能，而这恰恰就是 RSC 要解决的问题之一。
+
 ### 如何刷新 RSC ？
 
 那如何刷新 Server Components？
 
-一般组件树都是对应了路由，所以我们需要刷新页面获取新的组件树，需要注意的是，这里的「刷新」并不是指浏览器硬刷新。
+一般组件树都是对应了路由，所以我们需要刷新页面获取新的组件树（即刷新 Server Components），需要注意的是，这里的「刷新」并不是指浏览器硬刷新，而是指前端[软刷新](https://nextjs.org/docs/app/building-your-application/routing)，也不是一定要全屏刷新，可以是[嵌套路由](https://nextjs.org/docs/app/building-your-application/routing#nested-routes)的刷新。
 
 <iframe src="https://codesandbox.io/p/sandbox/dan-question-forked-tykm8r?file=%2Fapp%2FToggle.tsx&embed=1"
      style="width:100%; height: 500px; border:0; border-radius: 4px; overflow:hidden;"
@@ -100,6 +102,8 @@ export function OutletServerComponents() {
    ></iframe>
 
 我们通过每次点击改变 [`searchParams`](https://nextjs.org/docs/app/api-reference/file-conventions/page#searchparams-optional) 的方式，每次都「刷新」了 Server Component。 
+
+除了使用路由刷新，对于 Next.js 也可以使用[缓存刷新（Revalidating）](https://nextjs.org/docs/app/building-your-application/caching#revalidating-1)的方式，但也同样是组件树级别。
 
 ### 如何条件渲染 RSC ？
 
@@ -113,3 +117,9 @@ export function OutletServerComponents() {
    ></iframe>
 
 我们在点击按钮的时候，在 Client Components (`<Toggle />`) 修改 `searchParams` 中 `auth=true` 或 `auth=false`，从而在 Server Components（`<Details />`） 中渲染不同的内容。
+
+### 总结
+
+现阶段，RSC 只能是整个组件树级别的刷新，并不能指定某些组件刷新。不同的路有对应着不同的组件树，所以 RSC 的刷新就是路由/缓存的刷新。但是我们可以通过 [Dynamic Rendering](https://nextjs.org/docs/app/api-reference/functions/use-search-params#dynamic-rendering) 的方式，在 Server Components 中获取 Cookie、Headers 或者 SearchParams，进行判断，而渲染不同的内容。
+
+注：组件树级别的刷新并不意味着，所有组件（包括 Client Components 和 Server Components）都会重新渲染，而还是遵循 [React Reconciliation](https://react.dev/learn/preserving-and-resetting-state) 的逻辑，只更新改变了的内容。
