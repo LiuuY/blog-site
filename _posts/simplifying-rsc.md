@@ -160,3 +160,6 @@ export default function OuterServerComponent() {
 
 <img width="781" src="/assets/images/simplifying-rsc/after.png">
 
+### 总结
+
+RSC 就是将符合条件的组件（Server Components）在服务器端渲染并序列化后，再进行 SSR/SSG 或者发送给浏览器直接使用。
