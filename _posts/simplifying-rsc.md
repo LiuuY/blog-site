@@ -1,15 +1,15 @@
 ---
-title: '该如何理解 RSC'
-date: '2023-11-07'
+title: '该如何理解 React RSC'
+date: '2023-11-08'
 author:
   name: LiuuY
 ---
 
-React RSC 已经推出一段时间，它相对于以往我们使用 React 的模式（SPA、SSR/SSG）等等有很大的不同，本文从原理的角度介绍 RSC，使大家更好的理解。
+React RSC 已经推出一段时间，它相对于以往我们使用 React 的模式（SPA、SSR/SSG）等等有很大的不同，本文从原理的角度介绍 RSC，帮助大家更好的理解。
 
 ### 两种组件、三种渲染模式
 
-在 RSC 出现之前，我们只有「一种组件」和「两种渲染模式」，「一种组件」即我们所有的组件没有本质的区别，都是一个包含标签（HTML）逻辑（JavaScript）和样式（CSS）的模块，甚至可以说组件就是一个函数：
+在 RSC 出现之前，我们只有「一种组件」和「两种渲染模式」，「一种组件」指所有的组件没有本质的区别，都是一个包含标签（HTML）逻辑（JavaScript）和样式（CSS）的模块，甚至可以说组件就是一个函数：
 
 ```javascript
 function Greeting({ name }) {
@@ -41,13 +41,13 @@ function Greeting({ name }) {
 
 <img width="781" src="/assets/images/simplifying-rsc/before.png">
 
-在 RSC 的出现后，我们现在有了「两种组件」：Clinet Components 和 Server Components，「三种渲染模式」：CSR、SSR/SSG 和 Server Components Render
+但在 RSC 的出现后，我们现在有了「两种组件」：Clinet Components 和 Server Components，「三种渲染模式」：CSR、SSR/SSG 和 Server Components Render
 
 #### Server Components
 
-Server Components 是一种只在服务器端渲染的组件，由于并非在浏览器环境渲染，它不能有用户交互相关的逻辑（`onClick`、`useState`等等），一种简单的理解是：我们熟悉的「容器/展示模式」（Container/Presentational Pattern），Server Components 就是将容器组件放到了服务器端渲染，浏览器得到的并不是组件而是已经渲染好的 HTML 标签（严格来说浏览器得到并不是 HTML 标签，这需要经过 SSR 才可以，后面会讲到），当然容器组件和 Server Components 并不完全一致，仅仅是作为易于理解的参考。
+Server Components 是一种只在服务器端渲染的组件，由于并非在浏览器环境渲染，它不能有用户交互相关的逻辑（`onClick`、`useState`等等），一种简单的理解是：我们熟悉的「容器/展示模式」（Container/Presentational Pattern），Server Components 就是将容器组件放到了服务器端渲染，浏览器得到的并不是组件而是已经渲染好的 HTML 标签（严格来说浏览器得到并不是 HTML 标签，这需要经过 SSR/SSG 才可以，后面会讲到），当然容器组件和 Server Components 并不完全一致，仅仅是作为易于理解的参考。
 
-使用 Server Components 将用户交互逻辑（使用 Client Components）与可以不在浏览器中完成的逻辑分离，首先可以减少发送到浏览器代码量：
+使用 Server Components 将用户交互逻辑（使用 Client Components）与可以不在浏览器中完成的逻辑分离，首先可以减少发送到浏览器代码量，比如这个 Server Component：
 
 ```javascript
 import { parseISO, format } from 'date-fns'
@@ -66,7 +66,7 @@ async function DateDisplay() {
 
 #### Server Components Render
 
-Server Components 是如何渲染的呢？很简单，由服务器端将组件渲染完后，再[序列化（Serialization）](https://developer.mozilla.org/en-US/docs/Glossary/Serialization)发送到浏览器。其中最重要的就是「序列化」。
+Server Components 是如何渲染的呢？很简单，由服务器端将组件渲染完后，再[序列化（Serialization）](https://developer.mozilla.org/en-US/docs/Glossary/Serialization)发送到浏览器，这种格式被称为：[RSC Wire Format](https://twitter.com/dan_abramov/status/1631646794059743232)。
 
 例如：
 
@@ -111,7 +111,7 @@ export default function OuterServerComponent() {
 }
 ```
 
-由于 Client Components 中的事件处理函数无法序列化，React 采用了记录 Client Components 的位置的「引用」的方式：
+由于 Client Components 中的可能存在事件处理函数、Promise 等等无法序列化，RSC Wire Format 采用了记录 Client Components 的「模块的引用」的方式，包括组件所在的文件位置、名字等等：
 
 ```javascript
 // <ClientComponent />
@@ -125,7 +125,9 @@ export default function OuterServerComponent() {
 }
 ```
 
-总结一下，组件树序列化后包含了已经经过渲染的 Server Components 和一个个 Client Components 所在位置的引用。
+这样，在真正需要渲染成 HTML 的时候（CSR、SSR/SSG），就可以通过这些「模块的引用」找到真正的代码并执行。
+
+总结一下，Server Component Render 即是将组件树中的 Server Components 在服务器端渲染；对于 Client Components 则记录其所在模块，然后序列化为 RSC Wire Format。
 
 同时，由于序列化也带来了一些限制，例如 Server Components 向 Client Components 传递的 Props 必须是可以序列化的，否则在后续变无法将渲染的内容序列化：
 
@@ -162,4 +164,4 @@ export default function OuterServerComponent() {
 
 ### 总结
 
-RSC 就是将符合条件的组件（Server Components）在服务器端渲染并序列化后，再进行 SSR/SSG 或者发送给浏览器直接使用。
+RSC 的原理就是将符合条件的组件树在服务器端渲染并序列化成为 RSC Wire Format 后，再进行 SSR/SSG 成为 HTML 或者发送给浏览器供 React 直接使用。
