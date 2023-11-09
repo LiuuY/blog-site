@@ -16,7 +16,7 @@ React 官方文档中关于 [useTransition 的例子](https://react.dev/referenc
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
 
-但是，我们注意到，例子中，将耗时组件 `<PostsTab />` 使用 `memo` 包起来了。如果我们删除 `memo`，按照上述的操作首先点击 `Post (slow)` 按钮，再点击其他按钮，发现仅仅是删除了 `memo`，`useTransition` 就「失效」了 😭🤔️。
+但是，我们注意到，例子中，将耗时组件 `<PostsTab />` 使用 `memo` 包起来了。如果我们删除 `memo`，按照上述的操作首先点击 `Post (slow)` 按钮，**等到 Posts 加载出来后**，再点击其他按钮，明显页面卡顿了，仅仅是删除了 `memo`，`useTransition` 就「失效」了 😭🤔️。
 
 <iframe src="https://codesandbox.io/embed/usetransition-without-memo-example-mq99rw?expanddevtools=1&fontsize=14&hidenavigation=1&module=%2FPostsTab.js&theme=dark"
      style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
@@ -31,7 +31,7 @@ React 官方文档中关于 [useTransition 的例子](https://react.dev/referenc
 
 在例子中，当我们在父组件 `TabContainer` 中，每次点击按钮时（即调用了 `startTransition`），就会导致两次渲染。
 
-所以，当我们处于 `Post (slow)` 按钮时，再马上点击其他按钮，导致 `TabContainer` 首先重新渲染，即会导致非常耗时的 `<PostsTab />` 组件重新渲染（这也就是 React 文档中，为什么需要使用 `memo` 而防止这个两次渲染导致的问题）。
+所以，当我们处于 `Post (slow)` 按钮时，再点击其他按钮，导致 `TabContainer` 首先重新渲染，即会导致非常耗时的 `<PostsTab />` 组件重新渲染（这也就是 React 文档中，为什么需要使用 `memo` 而防止这个两次渲染导致的问题）。
 
 <img width="781" src="/assets/images/using-useTransition/app.png">
 
@@ -52,7 +52,7 @@ React 官方文档中关于 [useTransition 的例子](https://react.dev/referenc
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
 
-当处于 `Post (slow)` 按钮时，再点击其他按钮，console 打印的渲染日志：
+当处于 `Post (slow)` 按钮时，再点击其他按钮，console 打印的渲染日志，可见只有 `<TabButton />` 渲染了两次：
 
 <img width="381" src="/assets/images/using-useTransition/norender.png">
 
