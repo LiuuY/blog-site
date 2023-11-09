@@ -51,7 +51,7 @@ for (let i = 0; i < 100; i++) {
 
 此时就需要在每个时间片后，然后释放主线程。即将后面未执行的任务，放入 [Task Queue](https://javascript.info/event-loop#macrotasks-and-microtasks) 中，待浏览器主线执行优先级更高的任务后，再执行 Task Queue 中我们的任务。
 
-例如我们可以使用 `setTimeout`，即将任务放入 [Task Queue]，将超时时间设为 0ms（虽然设置为 0ms，一般浏览器最少超时时间 4ms，[不过这个说法已经过时了](https://twitter.com/iamakulov/status/1643629579129503744)）。
+例如我们可以使用 `setTimeout`，即将任务放入 Task Queue，将超时时间设为 0ms（虽然设置为 0ms，一般浏览器最少超时时间 4ms，[不过这个说法已经过时了](https://liuuy.cc/posts/setTimeout)）。
 
 这样在每个小任务执行后，就释放了主线程：
 
@@ -94,6 +94,8 @@ function runTasks2() {
 
 红色方块代表高优先级的动画，三个按钮分别代表了，执行一个大任务、使用 `setTimeout`/`MessageChannel` 释放主线程。
 
+可以看到如果我们点击「大任务」按钮，红色方块动画就会被卡住，而分解任务则不会出现：
+
 <video width="741" controls>
   <source src="/assets/images/react-schedule-work/record.mov" type="video/mp4">
   Your browser does not support HTML video.
@@ -107,6 +109,10 @@ function runTasks2() {
      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
+
+### 总结
+
+React 就是通过分解任务和让出主线程来优化性能的，这也就是 React Fiber 架构的核心逻辑。
 
 
 
