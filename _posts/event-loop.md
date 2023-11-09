@@ -30,11 +30,11 @@ while (EventQueueIsNotEmpty) {
 
 当然事情并非着么简单，此时我们需要知道：Task Queue 和 Microtask Queue。
 
-- [Task Queue](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)，故名思议是包含 Task 的 Queue，一个 Event Loop 可以包含多个 Task Queue，例如，有的 Task Queue 只包含用户交互 Task，而有的 Task Queue 包含其他的 Task。
+- [Task Queue](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)，故名思议是包含 Task 的 Queue，一个 Event Loop 可以包含多个 Task Queue，例如，有的 Task Queue 只包含用户交互 Task，而有的 Task Queue 包含其他的 Task。这些 Queue 之间也有优先级的区别。
 
 - [Microtask Queue](https://html.spec.whatwg.org/multipage/webappapis.html#microtask-queue)，不同于 Task Queue，一个 Event Loop 只有一个 Microtask Queue，它包含所有 Microtask。
 
-由此可见，我们需要循环（Loop）处理两个 Queue，具体逻辑是：
+由此可见，我们需要循环（Loop）处理两种 Queue，具体逻辑是：
 
 1. 从 Task Queue 中取出一个 Task，并执行这个 Task，执行过程中可能产生新的 Task，就继续加入到对应的 Task Queue 中。
 
@@ -186,3 +186,7 @@ alert("script");
 9. Task Queue 不为空，取出一个，并执行（也会将其放入 Call Stack 中）。
 
 所以依次弹出：script、promise、timeout。
+
+### 总结
+
+了解 Event Loop 的执行逻辑，和不同 Task 和 Queue 的关系，是明白很多前端黑魔法的基础：[「React Fiber 如何调度任务的」](https://liuuy.cc/posts/react-schedule-work)、[「setTimeout(fn, 0) 并非延时 0ms 也不是 4ms❗❗」](https://liuuy.cc/posts/setTimeout)。所以希望本文能帮助大家更好的理解 Event Loop。
