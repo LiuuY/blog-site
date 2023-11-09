@@ -5,7 +5,7 @@ author:
   name: LiuuY
 ---
 
-我使用了多年 React，发现很多人 [useReducer](https://react.dev/reference/react/useReducer) 使用的频率很少，大多情况都是使用 useState 来管理状态。但是很多情况下用  useReducer 更加合适，这里介绍两种场景：1. 组件中包含非常多的 useState；2. 全局状态管理。
+我发现很多人 [useReducer](https://react.dev/reference/react/useReducer) 使用的频率很少，大多都是使用 useState 来管理状态，但是很多情况下用  useReducer 更加合适，这里介绍两种场景：1. 组件中包含非常多的 useState；2. 全局状态管理。
 
 ### 组件中包含非常多的 useState
 
@@ -39,13 +39,14 @@ function UserAddress() {
 }
 ```
 
-首先很多的 useState 导致阅读不清晰。更重要的是，每个 state 都应该有相应的校验条件，例如，`phone` 必须以`1`开头，这样使用 useState，我们的校验逻辑只能在「Event Handler」中，例如上面代码中的 `handlePhoneInput`，那就很容易导致逻辑分散，甚至忘记处理。
+首先很多的 useState 导致阅读不清晰。更重要的是，每个 state 都应该有相应的校验条件，例如，`phone` 必须以 `1` 开头，这样使用 useState，我们的校验逻辑只能在「Event Handler」中，例如上面代码中的 `handlePhoneInput`，这就导致处理逻辑分散，如果遇到相关联的字段处理也是麻烦。
 
 我们可以使用 useReducer 的 [reducer](https://react.dev/reference/react/useReducer#usereducer) 函数，统一处理校验逻辑，使逻辑更紧凑更清晰：
 
 ```javascript
 import { useReducer } from 'react'
 
+// 将所以的状态处理逻辑统一
 const addressReducer = (state, action) => {
  switch (action.type) {
     case 'set_phone': {
@@ -75,7 +76,7 @@ function UserAddress() {
 
 ### 全局状态管理
 
-很多情况下，我们可能不想为了几个全局变量，而引入如 [redux](https://github.com/reduxjs/redux)、[zusland](https://github.com/pmndrs/zustand)等等状态管理库，此时我们可以结合 useReducer 和 [useContext](https://react.dev/reference/react/useContext) 来完成简单的全局状态管理。
+很多情况下，我们可能不想为了几个全局变量（例如主题、用户信息等等），而引入如 [Redux](https://github.com/reduxjs/redux)、[Zusland](https://github.com/pmndrs/zustand) 等等状态管理库，此时我们可以结合 useReducer 和 [useContext](https://react.dev/reference/react/useContext) 来完成简单的全局状态管理。
 
 例如我们的上述的用户地址组件的各个 `state`, 但是在组件树的不同位置，我们可以将 useReducer 的 [dispatch](https://react.dev/reference/react/useReducer#dispatch) 方法，通过 useContext，传递到不同的组件树位置，同时保留了统一的状态管理（reducer），这就是一个简单的全局状态管理了。
 
