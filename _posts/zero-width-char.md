@@ -78,7 +78,7 @@ const incertText = (confidentialText, username) => {
 
 ```javascript
 const removeText = (original) => {
-  return original.replace(/[\u200B\u200C\u200D\u2060]/g, '')
+  return original.replace(/\p{L}|\p{N}/gu, ''); // 将字符和数字移除
 }
 ```
 
