@@ -1,5 +1,5 @@
 ---
-title: 'Top React Skill to Learn in 2023'
+title: 'React 的核心模式'
 date: '2023-11-15'
 author:
   name: LiuuY
@@ -19,7 +19,7 @@ author:
 
 ```javascript
 const ChildComponent = () => {
-  return <p>Child</p>;
+  return <ExpensiveList />;
 };
 
 const ParentComponent = () => {
@@ -27,17 +27,17 @@ const ParentComponent = () => {
   return (
     <div>
       <button onClick={() => setCount(number + 1)}>{count}</button>
-      <Child />
+      <ChildComponent />
     </div>
   );
 };
 ```
 
-如果我们采用组合的模式，将 `<ChildComponent />` 提升（lift content up），此时 `<ParentComponent />` 的渲染就不会引起 `<ChildComponent />` 的重新渲染。
+如果我们采用组合的模式，将 `<ChildComponent />` 提升（Lift content up），此时 `<ParentComponent />` 的渲染就不会引起 `<ChildComponent />` 的重新渲染。
 
 ```javascript
 const ChildComponent = () => {
-  return <p>Child</p>;
+  return <ExpensiveList />;
 };
 
 const ParentComponent = ({ children }) => {
@@ -61,7 +61,7 @@ const App = () => {
 
 ### 减少 Prop Drilling
 
-将数据一级一级向下传是一种常见模式，
+将数据（Props）一级一级向下传是一种常见模式，但是如果传的层数过多、过复杂，使得 Debug 和重构都困难：
 
 ```javascript
 const App = () => {
@@ -85,9 +85,7 @@ const ChildComponent = ({ data }) => {
 };
 ```
 
-由于繁琐，Debug 和重构都困难，我们一般可以使用 React.Context 或者其他如 Redux 库等等方式来解决。
-
-我们也可以考虑使用组合模式，这样也能避免 Prop Drilling：
+我们一般可以使用 React Context、React Hook 或者其他如 Redux 库等等方式来解决。同时我们也可以考虑使用组合模式，这样也能避免 Prop Drilling：
 
 ```javascript
 const App = () => {
@@ -115,28 +113,26 @@ const ChildComponent = ({ data }) => {
 
 ### 更佳适合 React Server Component
 
-如下，由于 Client Component 不能 import Server Component，所以 `<ServerComponent />` 只能改为 Client Component，在浏览器渲染。
+下面代码的问题是，由于 Client Component 不能 import Server Component，所以 `<ServerComponent />` 只能改为 Client Component，在浏览器渲染，增加发送到浏览器代码量，增加其负担。
 
 ```javascript
 const App = () => {
-  const data = useData();
-
   return (
-    <ClientComponent data={data} />
+    <ClientComponent />
   );
 };
 
-const ClientComponent = ({ data }) => {
+const ClientComponent = () => {
   return (
     <div>
       { /* ❌ Client Component 不能 import Server Component */ }
-      <ServerComponent data={data} />
+      <ServerComponent />
     </div>
   );
 };
 
-const ServerComponent = ({ data }) => {
-  return <p>{ data }</p>;
+const ServerComponent = () => {
+  return <ExpensiveList />;
 };
 ```
 
@@ -144,11 +140,9 @@ const ServerComponent = ({ data }) => {
 
 ```javascript
 const App = () => {
-  const data = useData();
-
   return (
     <ClientComponent>
-      <ServerComponent data={data} />
+      <ServerComponent />
     </ClientComponent>
   );
 };
@@ -161,11 +155,11 @@ const ClientComponent = ({ children }) => {
   );
 };
 
-const ServerComponent = ({ data }) => {
-  return <p>{ data }</p>;
+const ServerComponent = () => {
+ return <ExpensiveList />;
 };
 ```
 
 ### 总结
 
-组合模式可以说是 React 最重要的设计模式，可以说很多 React 的核心逻辑也是围绕组合模式来设计的，希望本文可以加深大家的理解。
+组合模式可以说是 React 最核心设计模式，可以说很多 React 的核心逻辑也是围绕组合模式来设计的，希望本文可以加深大家的理解，以「组合」的方式使用 React。
