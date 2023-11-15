@@ -72,7 +72,7 @@ async function DateDisplay() {
 
 #### Server Components Render
 
-Server Components 是如何渲染的呢？很简单，由服务器端将组件渲染完后，再[序列化（Serialization）](https://developer.mozilla.org/en-US/docs/Glossary/Serialization)发送到浏览器，序列化后的格式被称为：[RSC Wire Format](https://twitter.com/dan_abramov/status/1631646794059743232)。
+Server Components 是如何渲染的呢？很简单，由服务器端将组件渲染完后，再[序列化（Serialization）](https://developer.mozilla.org/en-US/docs/Glossary/Serialization)发送到浏览器，序列化后的格式被称为：[RSC Wire Format](https://twitter.com/dan_abramov/status/1631646794059743232) (有时候也被称为：RSC Payload 或 RSC Flight Format)。
 
 例如：
 
