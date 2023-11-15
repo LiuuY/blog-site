@@ -41,7 +41,7 @@ function Greeting({ name }) {
 
 <img width="781" src="/assets/images/simplifying-rsc/before.png">
 
-但在 RSC 的出现后，我们现在有了「两种组件」：Clinet Components 和 Server Components，「三种渲染模式」：CSR、SSR/SSG 和 Server Components Render
+但在 RSC 的出现后，我们现在有了「两种组件」：Server Components 和 Client Components，「三种渲染模式」：CSR、SSR/SSG 和 Server Components Render
 
 #### Server Components
 
@@ -69,6 +69,12 @@ async function DateDisplay() {
 由于这个组件在服务器端渲染，浏览器得到的只是 `<time datetime="2008-02-14">2008-02-14</time>`，并不会包含 `date-fns` 这个库，这样便可以显著的减少发送到浏览器的包大小。
 
 同时，由于服务器端并没有并发请求限制而且离数据源更近，使得请求速度快，渲染更快。
+
+#### Client Components
+
+Client Components 是指渲染在客户端的组件（客户端指浏览器，也可以被 SSR/SSG 等）。它需要在文件最上面加上 [`'use client'`](https://react.dev/reference/react/use-client#use-client) 用于标识本文件中的组件是 Client Components。
+
+一个组件如果没有被标识为 `'use client'`，那它如果在一个 Client Component 中渲染，则它就是 Client Components，反之如果在一个 Server Components 中渲染，则它就是 Server Components。
 
 #### Server Components Render
 
