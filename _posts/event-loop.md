@@ -40,6 +40,8 @@ while (EventQueueIsNotEmpty) {
 
 2. 每执行完一个 Task，就依次执行 Microtask Queue 中的所有 Microtask，执行过程中产生的新 Microtask，就继续加入到 Microtask Queue 中，直到所有 Microtask 执行完毕。
 
+由于 Node.js 的 Event Loop 包含多个 Task Queue：Timer Queue、Poll Queue、Check Queue 和 Close Queue，会在每个 Queue 中的一个 Task 执行后，检查并执行全部 Microtask Queue：`process.nextTick` Queue 和  Promise Queue。
+
 3. Microtask Queue 执行完毕后，会进行页面渲染。
 
 4. 回到步骤 1。
