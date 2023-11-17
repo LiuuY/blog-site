@@ -30,9 +30,9 @@ while (EventQueueIsNotEmpty) {
 
 当然事情并非着么简单，此时我们需要知道：Task Queue 和 Microtask Queue。
 
-- [Task Queue](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)，故名思议是包含 Task 的 Queue，一个 Event Loop 可以包含多个 Task Queue，例如，有的 Task Queue 只包含用户交互 Task，而有的 Task Queue 包含其他的 Task。这些 Queue 之间也有优先级的区别。
+- [Task Queue](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)，故名思议是包含 Task 的 Queue，一个 Event Loop 可以包含多个 Task Queue，例如，有的 Task Queue 只包含用户交互 Task，而有的 Task Queue 包含其他的 Task。在 Node.js 的 Event Loop 实现中 Queue 之间有优先级的区别，例如：Timer Queue 针对 `setTimeout` 等时间相关的 Task、Poll Queue 针对 IO 相关的 Task。Timer Queue 的优先级比 Poll Queue 高。
 
-- [Microtask Queue](https://html.spec.whatwg.org/multipage/webappapis.html#microtask-queue)，不同于 Task Queue，一个 Event Loop 只有一个 Microtask Queue，它包含所有 Microtask。
+- [Microtask Queue](https://html.spec.whatwg.org/multipage/webappapis.html#microtask-queue)，不同于 Task Queue，一个 Event Loop 只有一个 Microtask Queue，它包含所有 Microtask。在 Node.js 的 Event Loop 实现中 Microtask Queue 包含 `process.nextTick` Queue 和 Promise Queue，它们之间有优先级的区别，会先执行全部的 `process.nextTick` Queue 然后在执行全部的 Promise Queue。
 
 由此可见，我们需要循环（Loop）处理两种 Queue，具体逻辑是：
 
