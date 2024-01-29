@@ -49,7 +49,7 @@ Server Components 是一种**只**在服务器端渲染的组件，由于不会�
 
 Client Components 中的「Client」有些误导，它指的并不是组件只能在「Client」（一般就是浏览器）中渲染，也可以使用 SSR/SSG 渲染。
 
-Client Components 与 Server Components 的核心区别就是，Client Components 无论是否 SSR/SSG 渲染（也仅仅针对第一次请求），后续渲染都需要在浏览器中由 React 完成，而 Server Components 永远不会在浏览器渲染，包括数据请求也在服务端完成，而且 Server Components 的刷新（Rerender）也是通过[路由刷新](https://liuuy.cc/posts/rsc-routing)，重新在服务器端完成，然后在发送给浏览器，如果所有数据请求都在 Server Components 完成，浏览器就不会发一个数据请求🤯。
+Client Components 与 Server Components 的核心区别就是，Client Components 无论是否 SSR/SSG 渲染（也仅仅针对第一次请求），后续渲染都需要在浏览器中由 React 完成，而 Server Components 永远不会在浏览器渲染，包括数据请求也在服务端时候完成，而且 Server Components 的刷新（Rerender）也是通过[路由刷新](https://liuuy.cc/posts/rsc-routing)，重新在服务器端完成，然后在发送给浏览器，如果所有数据请求都在 Server Components 完成，浏览器就不会发一个数据请求🤯。（[对于静态内容也可以在构建时候完成](https://nextjs.org/docs/app/building-your-application/rendering/server-components#static-rendering-default)）
 
 一种简单的理解是：我们熟悉的「容器/展示模式」（Container/Presentational Pattern），Server Components 就是将容器组件放到了服务器端渲染，浏览器得到的并不是组件而是已经渲染好的 HTML 标签（严格来说浏览器得到并不是 HTML 标签，这需要经过 SSR/SSG 才可以，后面会讲到），当然容器组件和 Server Components 并不完全一致，仅仅是作为易于理解的参考。
 
