@@ -34,7 +34,7 @@ while (EventQueueIsNotEmpty) {
 
 - [Microtask Queue](https://html.spec.whatwg.org/multipage/webappapis.html#microtask-queue)，不同于 Task Queue，一个 Event Loop 只有一个 Microtask Queue，它包含所有 Microtask。
 
-在 Node.js 的 Event Loop 实现中 Microtask Queue 包含 nextTick Queue（即调用 `process.nextTick()`） 和 Promise Queue，它们之间有优先级的区别，即先执行全部的 nextTick Queue 然后在执行全部的 Promise Queue。（严格来说，(nextTick Queue 并不属于 Event Loop 的实现（V8），是 Node.js 自己加入的逻辑)[https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/#processnexttick]，但是考虑到 nextTick Queue 与 Event Loop 关系密切，姑且放到一起描述。）
+在 Node.js 的 Event Loop 实现中 Microtask Queue 包含 nextTick Queue（即调用 `process.nextTick()`） 和 Promise Queue，它们之间有优先级的区别，即先执行全部的 nextTick Queue 然后在执行全部的 Promise Queue。（严格来说，[nextTick Queue 并不属于 Event Loop 的实现（V8），是 Node.js 自己加入的逻辑](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/#processnexttick)，但是考虑到 nextTick Queue 与 Event Loop 关系密切，姑且放到一起描述。）
 
 由此可见，我们需要循环（Loop）处理两种 Queue，具体逻辑是：
 
