@@ -21,11 +21,11 @@ author:
 
 一个「简单」的使用 `useEffect` 获取数据的代码如下：
 
-<img width="381" src="/assets/images/react-use-fetch-data/fetch-data-useEffect.png">
+<img width="500" src="/assets/images/react-use-fetch-data/fetch-data-useEffect.png">
 
 这也就是为什么第三方数据获取库大行其道的重要原因，因为它们极大的简化了逻辑，同时也包含了 [Cache](https://swr.vercel.app/docs/advanced/cache)、[Prefetching](https://swr.vercel.app/docs/prefetching)、[Middleware](https://swr.vercel.app/docs/middleware) 等等更加高级的功能。
 
-<img width="381" src="/assets/images/react-use-fetch-data/fetch-data-useSWR.png">
+<img width="500" src="/assets/images/react-use-fetch-data/fetch-data-useSWR.png">
 
 不过现在 React 团队推出了一个新的 Hook：[use](https://react.dev/reference/react/use)。
 
@@ -46,17 +46,21 @@ const data = await dataPromise;
 
 2. 使用 [Suspence](https://react.dev/reference/react/Suspense) 处理 Loading 状态。
 
-<img width="381" src="/assets/images/react-use-fetch-data/fetch-data-use-1.png">
+<img width="500" src="/assets/images/react-use-fetch-data/fetch-data-use-1.png">
 
 3. 使用 [Error Boundary](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary) 或者 `Promise.catch` 处理 Error 状态。
 
-<img width="381" src="/assets/images/react-use-fetch-data/fetch-data-use-2.png">
+<img width="500" src="/assets/images/react-use-fetch-data/fetch-data-use-2.png">
 
 可以看到和上面 `useEffect` 的代码相比简化了非常多。
 
 同时，`use` 也可以在 Server Components 和 Client Components 之间[传递数据](https://react.dev/reference/react/use#streaming-data-from-server-to-client)。
 
-<iframe src="https://stackblitz.com/edit/stackblitz-starters-zbijzd?ctl=1&embed=1&file=src%2Fmessage.js"></iframe>
+<iframe src="https://stackblitz.com/edit/stackblitz-starters-zbijzd?ctl=1&embed=1&file=src%2Fmessage.js"    
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="useTransition-only-heavy-example"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"></iframe>
 
 ### 总结
 
