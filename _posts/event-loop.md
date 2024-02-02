@@ -11,7 +11,7 @@ Event Loop 是由于 JavaScript 的单线程执行机制，为了是协调代码
 
 Event Loop 中的 Event 指的是：Task（或称为 Macrotask）和 Microtask，注意不是 Task Queue 或者 Microtask Queue。
 
-- [Task](https://html.spec.whatwg.org/multipage/webappapis.html#concept-task) 包含了，执行代码、代码回调、`setTimeout` 延迟执行的函数等等。
+- [Task](https://html.spec.whatwg.org/multipage/webappapis.html#concept-task) 包含了，执行代码、代码回调、`setTimeout` 延迟执行的函数、HTML Parse 等等。
 
 - [Microtask](https://html.spec.whatwg.org/multipage/webappapis.html#microtask) 则全部为代码触发的任务，包含：`Promise`、`MutationObserver`、`queueMicrotask` 等等。
 
@@ -30,9 +30,9 @@ while (EventQueueIsNotEmpty) {
 
 当然事情并非着么简单，此时我们需要知道：Task Queue 和 Microtask Queue。
 
-- [Task Queue](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)，故名思议是包含 Task 的 Queue，一个 Event Loop 可以包含多个 Task Queue，例如，有的 Task Queue 只包含用户交互 Task，而有的 Task Queue 包含其他的 Task。在 Node.js 的 Event Loop 实现中 Queue 之间有优先级的区别，例如：Timer Queue 针对 `setTimeout` 等时间相关的 Task、Poll Queue 针对 IO 相关的 Task（`fs.readFile` 等）。Timer Queue 的优先级就比 Poll Queue 高。
+- [Task Queue](https://html.spec.whatwg.org/multipage/webappapis.html#task-queue)，故名思议是包含 Task 的集合（Set，并非严格意义上的队列 Queue），一个 Event Loop 可以包含多个 Task Queue，例如，有的 Task Queue 只包含用户交互 Task，而有的 Task Queue 包含其他的 Task。在 Node.js 的 Event Loop 实现中 Queue 之间有优先级的区别，例如：Timer Queue 针对 `setTimeout` 等时间相关的 Task、Poll Queue 针对 IO 相关的 Task（`fs.readFile` 等）。Timer Queue 的优先级就比 Poll Queue 高。
 
-- [Microtask Queue](https://html.spec.whatwg.org/multipage/webappapis.html#microtask-queue)，不同于 Task Queue，一个 Event Loop 只有一个 Microtask Queue，它包含所有 Microtask。
+- [Microtask Queue](https://html.spec.whatwg.org/multipage/webappapis.html#microtask-queue)，不同于 Task Queue，一个 Event Loop 只有一个 Microtask Queue（是一个队列 Queue），含所有 Microtask。
 
 在 Node.js 的 Event Loop 实现中 Microtask Queue 包含 nextTick Queue（即调用 `process.nextTick()`） 和 Promise Queue，它们之间有优先级的区别，即先执行全部的 nextTick Queue 然后在执行全部的 Promise Queue。（严格来说，[nextTick Queue 并不属于 Event Loop 的实现（V8），是 Node.js 自己加入的逻辑](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/#processnexttick)，但是考虑到 nextTick Queue 与 Event Loop 关系密切，姑且放到一起描述。）
 
@@ -60,103 +60,11 @@ while (TaskQueueIsNotEmpty) {
 }
 ```
 
-### 什么是 Call Stack
-
-那什么时候这个 Loop 开始执行呢？我们就需要了解 [Call Stack（标准中称为 Execution Context Stack）](https://tc39.es/ecma262/#execution-context-stack)。
-
-Call Stack 是 JavaScript 执行上下文组成的栈。
-
-例如：
-
-```javascript
-// main.js
-function foo() {
-  bar();
-}
-
-function bar() {
-}
-
-foo()
-```
-
-0. 初始 Call Stack 为空：
-
-```
-|        |
-|        | 
-|        |
-|        |
-|        |
-```
-
-1. JavaScript 引擎，首先载入这个文件，即开始执行代码，我们可以称之为 `main()`，将其入栈：
-
-```
-|        |
-|        | 
-|        |
-|        |
-| main() |
-```
-
-2. 执行到 `foo()`，将其入栈：
-
-```
-|        |
-|        | 
-|        |
-| foo()  |
-| main() |
-```
-
-3. 执行到 `foo()` 函数中，遇到 `bar()`，将其入栈：
-
-```
-|        |
-|        | 
-| bar()  |
-| foo()  |
-| main() |
-```
-
-4. `bar()` 执行完毕，将其出栈：
-
-```
-|        |
-|        | 
-|        |
-| foo()  |
-| main() |
-```
-
-5. `foo()` 执行完毕，将其出栈：
-
-```
-|        |
-|        | 
-|        |
-|        |
-| main() |
-```
-
-6. `main()` 执行完毕，将其出栈：
-
-```
-|        |
-|        | 
-|        |
-|        |
-|        |
-```
-
-任何代码都是放到 Call Stack 中执行的（无论来自代码还是 Task Queue/Microtask Queue）。
-
 ### Event Loop 执行步骤
 
-有了上述的理论基础，我们可以将它们串联起来，JavaScript 代码执行的过程就是：载入代码，将其放入 Call Stack 开始执行，遇到 Task 就放到 Task Queue 中，遇到 Microtask 就放到 Microtask Queue。
+有了上述的理论基础，我们可以将它们串联起来，JavaScript 代码执行的过程就是：解析 `<script>` 标签中的同步代码，开始执行同步代码，遇到 Task （例如回调）就放到 Task Queue 中，遇到 Microtask 就放到 Microtask Queue。
 
-当 Call Stack 为空的时候，Event Loop 就开始执行，注意，执行代码本身也是一个 Task，所以当前代码执行后，需要执行 Microtask Queue。
+注意，`<script>` 标签中的同步代码本身也是一个 Task（[Global Task](https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task)），已经被加入到 Event Loop 中，所以当前同步代码执行后，需要执行 Microtask Queue。
 
 我们举个例子：
 
