@@ -11,7 +11,7 @@ React Fiber 如何做到性能提升的呢？
 
 1. 将 React 需要执行的任务分解。
 
-2. 在每个固定的时间片内执行任务，然后释放主线程，以执行绘制和响应用户交互事件等。
+2. 在每个固定的时间片内执行任务，然后释放主线程（yield to the main thread），以执行绘制和响应用户交互事件等。
 
 这样无论多复杂的任务，都不会阻塞主线程，保证了体验。
 
@@ -49,9 +49,9 @@ for (let i = 0; i < 100; i++) {
 }
 ```
 
-此时就需要在每个时间片后，然后释放主线程。即将后面未执行的任务，放入 [Task Queue](https://javascript.info/event-loop#macrotasks-and-microtasks) 中，待浏览器主线执行优先级更高的任务后，再执行 Task Queue 中我们的任务。
+此时就需要在每个时间片后，然后释放主线程，即将后面未执行的任务，放入 [Task Queue](https://javascript.info/event-loop#macrotasks-and-microtasks) 中，待浏览器主线执行优先级更高的任务后，再执行 Task Queue 中我们的任务。
 
-例如我们可以使用 `setTimeout`，即将任务放入 Task Queue，将超时时间设为 0ms（虽然设置为 0ms，一般浏览器最少超时时间 4ms，[不过这个说法已经过时了](https://liuuy.cc/posts/setTimeout)）。
+例如我们可以使用 `setTimeout` 将后续任务放入 Task Queue，将超时时间设为 0ms（虽然设置为 0ms，一般浏览器最少超时时间 4ms，[不过这个说法已经过时了](https://liuuy.cc/posts/setTimeout)）。
 
 这样在每个小任务执行后，就释放了主线程：
 
@@ -63,7 +63,7 @@ let count1 = 100;
 async function runTasks1() {
   if (count1-- > 0) {
     smallCpuIntensiveTask()
-    setTimeout(smallCpuIntensiveTask, 0); // 释放主线程
+    setTimeout(smallCpuIntensiveTask, 0); // 释放主线程，将后续任务加入 Task Queue
   }
 }
 ```
@@ -81,7 +81,7 @@ const port = channel.port2;
 channel.port1.onmessage = () => {
   if (count2-- > 0) {
     smallCpuIntensiveTask()
-    port.postMessage(null); // 释放主线程
+    port.postMessage(null); // 释放主线程，将后续任务加入 Task Queue
   }
 }
 
@@ -90,9 +90,7 @@ function runTasks2() {
 }
 ```
 
-最后，我们运行下我们的例子，
-
-红色方块代表高优先级的动画，三个按钮分别代表了，执行一个大任务、使用 `setTimeout`/`MessageChannel` 释放主线程。
+最后，我们运行下面的例子，红色方块代表高优先级的动画，三个按钮分别代表了，执行一个大任务、使用 `setTimeout`/`MessageChannel` 释放主线程。
 
 可以看到如果我们点击「大任务」按钮，红色方块动画就会被卡住，而分解任务则不会出现：
 
@@ -110,9 +108,26 @@ function runTasks2() {
      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
    ></iframe>
 
+但是使用 `setTimeout`/`MessageChannel` 的方案也并不完美，例如可能有其他的代码也将任务加入了 Task Queue 中并且在我们的 Task 前面，这就会导致更加长的延迟执行。
+
+针对这个情况，有个新的 API：[`scheduler.yield()`](https://github.com/WICG/scheduling-apis/blob/main/explainers/yield-and-continuation.md)，专门处理「释放主线程」这个问题：
+
+```javascript
+async function yieldy () {
+  // Do some work...
+  // ...
+
+  // Yield!
+  await scheduler.yield();
+
+  // Do some more work...
+  // ...
+}
+```
+
 ### 总结
 
-React 就是通过分解任务和让出主线程来优化性能的，这也就是 React Fiber 架构的核心逻辑。
+React 就是通过分解任务和让出主线程来优化性能的，这也就是 React Fiber 架构调度任务的的核心逻辑。同时，「释放主线程（yield to the main thread）」这个方式也是一个通用的优化长任务的逻辑：例如处理[输入延迟的问题](https://web.dev/articles/optimize-input-delay#avoid_long_tasks)。
 
 
 
